@@ -1,0 +1,110 @@
+name: ebank_users
+description: "A new Flutter project."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.19.0
+  bmprogresshud: ^0.0.8
+  gradient_widgets: ^0.6.0
+  flutter_spinkit: ^5.0.0
+  http: ^0.13.3
+  email_validator: ^2.0.1
+  flutter_easyloading: ^3.0.3
+  shared_preferences: ^2.1.0
+  flutter_datetime_picker: ^1.5.1
+  flutter_html: ^2.2.1
+  sn_progress_dialog: ^1.0.3
+  url_launcher: ^6.0.10
+  google_fonts: ^2.1.0
+  store_redirect:
+  flutter_native_splash: ^1.2.1
+  get: ^4.6.1
+  multi_select_flutter: ^4.0.0
+  local_auth:
+  flutter_launcher_icons: "^0.9.2"
+  encrypt:
+  carousel_slider: ^4.0.0-nullsafety.0
+  clay_containers: any
+  flutter_staggered_grid_view: ^0.4.0
+  audioplayers: ^4.0.1
+  permission_handler: ^10.2.0
+  app_settings: ^4.1.1
+  ttlock_flutter: ^0.2.0
+  fluttertoast:
+  iconly:
+  pin_code_fields:
+  dotted_border:
+  google_sign_in: ^6.1.5
+  firebase_core: ^2.20.0
+  sign_in_with_apple: ^5.0.0
+
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  flutter_launcher_icons: "^0.9.2"
+
+
+# flutter_native_splash-production.yaml
+flutter_native_splash:
+  color: "#ffffff"
+  image: lib/resources/logo.jpg
+  branding: lib/resources/logo.jpg
+  color_dark: "#121212"
+  image_dark: lib/resources/logo.jpg
+  branding_dark: lib/resources/logo.jpg
+
+  android_12:
+    image: lib/resources/logo.jpg
+    icon_background_color: "#ffffff"
+    image_dark: lib/resources/logo.jpg
+    icon_background_color_dark: "#121212"
+
+  web: false
+
+#  flutter_launcher_icons: "^0.9.2"
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "lib/resources/logo.jpg"
+  adaptive_icon_foreground: "lib/resources/logo.jpg"
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+  generate: true
+  uses-material-design: true
+
+  assets:
+    - lib/resources/logo.jpg
+    - assets/
+    - lib/resources/
+
+  fonts:
+    - family: Klasik
+      fonts:
+        - asset: lib/resources/fonts/Klasik Regular.otf
