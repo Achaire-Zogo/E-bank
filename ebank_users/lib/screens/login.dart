@@ -36,8 +36,21 @@ class _LoginState extends State<Login> {
     // EasyLoading.show(status: AppLocalizations.of(context)!.load);
     var url = Uri.parse(Urls.login_);
     try {
-      final response = await http.post(url,
-          body: {"username": email, "password": pass});
+      // Création des données à envoyer
+      final Map<String, dynamic> requestData = {
+        "username": email,
+        "password": pass,
+      };
+
+      // Effectuer la requête POST
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json", // Format JSON pour l'envoi
+          "Accept": "application/json", // Accepter JSON en réponse
+        },
+        body: jsonEncode(requestData), // Convertir les données en JSON
+      );
       print(response.body);
       var data = jsonDecode(response.body);
       if (kDebugMode) {
