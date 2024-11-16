@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 
 import '../urls/Urls.dart';
 
@@ -35,24 +35,26 @@ class _LoginState extends State<Login> {
   void login(String email, String pass) async {
     // EasyLoading.show(status: AppLocalizations.of(context)!.load);
     var url = Uri.parse(Urls.login_);
-    try {
-      // Création des données à envoyer
-      final Map<String, dynamic> requestData = {
-        "username": email,
-        "password": pass,
-      };
+    Dio dio = Dio();
 
-      // Effectuer la requête POST
-      final response = await http.post(
-        url,
-        headers: {
-          "Content-Type": "application/json", // Format JSON pour l'envoi
-          "Accept": "application/json", // Accepter JSON en réponse
-        },
-        body: jsonEncode(requestData), // Convertir les données en JSON
+    try {
+
+      Response response = await dio.post(
+        Urls.login_,
+        data: {"username": email, "password": pass},
+        options: Options(
+          contentType: "application/json; charset=utf-8",
+          responseType: ResponseType.json,
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            // "X-CSRFToken": getCookie("csrftoken"),
+          },
+        ),
       );
-      print(response.body);
-      var data = jsonDecode(response.body);
+
+
+      print(response.data);
+      var data = jsonDecode(response.data);
       if (kDebugMode) {
         print(data);
       }
@@ -75,8 +77,13 @@ class _LoginState extends State<Login> {
       setState(() {
         _loading = false;
       });
-      print(e.toString());
       EasyLoading.showError("An error occurred");
+      // Gérer les erreurs
+      if (e is DioError) {
+        print("Erreur Dio : ${e.response?.data ?? e.message}");
+      } else {
+        print("Erreur inconnue : $e");
+      }
     }
   }
 
