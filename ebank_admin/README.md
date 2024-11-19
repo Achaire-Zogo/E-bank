@@ -1,4 +1,4 @@
-# ebank_admin
+# chatty
 
 A new Flutter project.
 

@@ -1,8 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.m1_fonda.ebank_admin">
-    <!-- The INTERNET permission is required for development. Specifically,
-         the Flutter tool needs it to communicate with the running application
-         to allow setting breakpoints, to provide hot reload, etc.
-    -->
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Required permissions -->
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
+        android:label="chatty"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher"
+        tools:replace="android:icon, android:label">
+        <!-- You can add additional configurations for debug here if needed -->
+    </application>
+
 </manifest>
