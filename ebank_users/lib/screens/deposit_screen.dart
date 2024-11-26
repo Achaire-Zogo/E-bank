@@ -71,12 +71,12 @@ class _DepositScreenState extends State<DepositScreen> {
         elevation: 0,
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              const Color(0xFF1976D2),
+              Color(0xFF1976D2),
               Colors.white,
             ],
           ),

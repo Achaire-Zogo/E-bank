@@ -12,6 +12,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../constant/constant.dart';
 
 class Login extends StatefulWidget {
+  const Login({super.key});
+
   @override
   _LoginState createState() => _LoginState();
 }
@@ -92,7 +94,7 @@ class _LoginState extends State<Login> {
         // Naviguer vers la page d'accueil
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => Home()),
+          MaterialPageRoute(builder: (context) => const Home()),
           (route) => false,
         );
       } else {
@@ -183,7 +185,7 @@ class _LoginState extends State<Login> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Signup(),
+                                  builder: (context) => const Signup(),
                                 ),
                               );
                             },

@@ -151,7 +151,7 @@ class _SignupState extends State<Signup> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(height: 50),
-                  Text("Register Now",
+                  const Text("Register Now",
                     style: TextStyle(fontSize: 30),
                   ),
                   const SizedBox(height: 40),
@@ -170,7 +170,7 @@ class _SignupState extends State<Signup> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
                   TextFormField(
                     controller: _cniNumberController,
                     decoration: InputDecoration(
@@ -186,7 +186,7 @@ class _SignupState extends State<Signup> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -202,7 +202,7 @@ class _SignupState extends State<Signup> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
                   TextFormField(
                     controller: _passwordController,
                     obscureText: true,
@@ -219,7 +219,7 @@ class _SignupState extends State<Signup> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
                   _loading
                       ? const Center(child: CircularProgressIndicator())
                       :MaterialButton(
@@ -238,7 +238,7 @@ class _SignupState extends State<Signup> {
                     color: Colors.blue,
                     height: 50,
                     minWidth: 600,
-                    child: SizedBox(
+                    child: const SizedBox(
                       width: double.infinity,
                       child: Text(
                         "Register Now",
@@ -246,7 +246,7 @@ class _SignupState extends State<Signup> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
                   TextButton(
                     onPressed: () {
                       Navigator.pushReplacement(
@@ -256,11 +256,11 @@ class _SignupState extends State<Signup> {
                         ),
                       );
                     },
-                    child: Text('Already have an account?'),
+                    child: const Text('Already have an account?'),
         
                   ),
                   const SizedBox(height: 20.0),
-                  Row(
+                  const Row(
                     children: [
                       Expanded(child: Divider()),
                       Padding(
@@ -278,11 +278,11 @@ class _SignupState extends State<Signup> {
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor: Colors.black,
-                          minimumSize: Size(150, 50),
-                          side: BorderSide(color: Colors.grey),
+                          minimumSize: const Size(150, 50),
+                          side: const BorderSide(color: Colors.grey),
                         ),
-                        icon: Icon(Icons.account_balance),
-                        label: Text('Google'),
+                        icon: const Icon(Icons.account_balance),
+                        label: const Text('Google'),
                         onPressed: () {
                           // Implémenter la connexion Google
                         },
@@ -291,10 +291,10 @@ class _SignupState extends State<Signup> {
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.black,
                           backgroundColor: Colors.white,
-                          minimumSize: Size(150, 50),
+                          minimumSize: const Size(150, 50),
                         ),
-                        icon: Icon(Icons.apple),
-                        label: Text('Apple'),
+                        icon: const Icon(Icons.apple),
+                        label: const Text('Apple'),
                         onPressed: () {
                           // Implémenter la connexion Apple
                         },

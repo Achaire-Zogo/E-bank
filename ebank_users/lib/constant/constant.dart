@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:ebank_users/urls/Urls.dart';
 
-class Constant{
+class Constant {
   static Future<String?> getCookie(String name) async {
     try {
-      final response = await Dio().get(Urls.user_service);
+      final response = await Dio().get(Urls.userService);
       List<Cookie> cookies = response.headers['set-cookie']!
           .toList()
           .map((string) => Cookie.fromSetCookieValue(string))

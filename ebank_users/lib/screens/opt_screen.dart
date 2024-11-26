@@ -35,7 +35,7 @@ class _OTPScreenState extends State<OTPScreen> {
   }
 
   void startTimer() {
-    const oneSec = const Duration(seconds: 1);
+    const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(oneSec, (Timer timer) {
       if (remainingTime == 0) {
         setState(() {
@@ -67,7 +67,7 @@ class _OTPScreenState extends State<OTPScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Home(),
+            builder: (context) => const Home(),
           ),
         );
       } else {
@@ -90,7 +90,7 @@ class _OTPScreenState extends State<OTPScreen> {
     try {
       Dio dio = Dio();
       Response response = await dio.post(
-        Urls.resend_otp,
+        Urls.resendOtp,
         data: {
           "email": widget.email,
         },
@@ -161,7 +161,7 @@ class _OTPScreenState extends State<OTPScreen> {
               const SizedBox(height: 30),
               Form(
                 key: formKey,
-                child: Container(
+                child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: TextField(
                     controller: _otpController,
@@ -175,10 +175,10 @@ class _OTPScreenState extends State<OTPScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: Colors.blue, width: 2),
+                        borderSide: const BorderSide(color: Colors.blue, width: 2),
                       ),
                     ),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 20,
                       letterSpacing: 2,
                     ),
@@ -186,12 +186,19 @@ class _OTPScreenState extends State<OTPScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 30),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: ElevatedButton(
                   onPressed: isLoading ? null : verifyOTP,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   child: isLoading
                       ? CircularProgressIndicator(color: Colors.white)
                       : Text(
@@ -201,16 +208,9 @@ class _OTPScreenState extends State<OTPScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: EdgeInsets.symmetric(vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextButton(
                 onPressed: remainingTime == 0 ? resendOTP : null,
                 child: Text(
