@@ -6,7 +6,7 @@ import 'package:ebank_users/urls/Urls.dart';
 class Constant {
   static Future<String?> getCookie(String name) async {
     try {
-      final response = await Dio().get(Urls.userService);
+      final response = await Dio().get(Urls.userServiceCookie);
       List<Cookie> cookies = response.headers['set-cookie']!
           .toList()
           .map((string) => Cookie.fromSetCookieValue(string))

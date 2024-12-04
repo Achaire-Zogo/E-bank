@@ -1,21 +1,24 @@
 // ignore: file_names
 
 class Urls {
-  static const String serviceDtw = "http://192.168.1.122:8001";
-  static const String serviceBank =
-      "https://5d5e-129-0-174-81.ngrok-free.app/BANK-SERVICE";
-  static const String serviceDemand = "http://192.168.1.157:32770";
+  static const String baseUrl = "http://192.168.1.157:8079";
+  static const String serviceDtw = "$baseUrl/SERVICE-DTW";
+  static const String serviceBank = "$baseUrl/BANK-SERVICE";
+  static const String serviceDemand = "$baseUrl/SERVICE-DEMAND";
+  static const String serviceUserBankAccount =
+      "$baseUrl/SERVICE-USER-BANK-ACCOUNT";
+  static const String serviceUser = "$baseUrl/USER-SERVICE";
+  static const String serviceNotification = "$baseUrl/SERVICE-NOTIFICATION";
 
-  static const String userService = "$serviceDtw:8085/api";
+  //Specifique Link For User
+  static const String login = "$serviceUser/api/login/";
+  static const String signup = "$serviceUser/api/signup/";
+  static const String verifyOtp = "$serviceUser/api/verify_otp";
+  static const String resendOtp = "$serviceUser/api/resend_otp";
+  static const String userServiceCookie = "$serviceUser/api/users";
+  //End Specifique
 
-  static const String accountService = "$serviceDtw:8001/api/";
-
-  static const String login = "$accountService/login/";
-  static const String signup = "$accountService/signup/";
-  static const String verifyOtp = "$accountService/verify_otp";
-  static const String resendOtp = "$accountService/resend_otp";
   //for bank
   //For dashboard
-  static const String getBalanceAndHistoric =
-      "$accountService/operations/user/";
+  static const String getBalanceAndHistoric = "$serviceUser/operations/user/";
 }

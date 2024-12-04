@@ -48,10 +48,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
+    //prefs.setString('id_user', '1');
+    //print(prefs.getString('id_user'));
     String? userId = prefs.getString('id_user');
     if (userId == null) return;
-
+    print(prefs.getString('id_user'));
     try {
       var response = await Dio()
           .get('${Urls.serviceDtw}/api/operations/user/$userId/dashboard');
