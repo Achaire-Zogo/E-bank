@@ -44,7 +44,7 @@ class _LoginState extends State<Login> {
     try {
       Dio dio = Dio();
       Response response = await dio.post(
-        Urls.login_,
+        Urls.login,
         data: {
           "username": _emailController.text,
           "password": _passwordController.text,
@@ -76,7 +76,7 @@ class _LoginState extends State<Login> {
         // Sauvegarder le token et les informations utilisateur
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
-        await prefs.setString('id', userInfo['id'].toString());
+        await prefs.setString('id_user', userInfo['id'].toString());
         await prefs.setString('username', userInfo['username']);
         await prefs.setString('email', userInfo['email']);
         await prefs.setString('role', userInfo['role']);
@@ -101,7 +101,8 @@ class _LoginState extends State<Login> {
         setState(() {
           _isLoading = false;
         });
-        EasyLoading.showError(response.data['message'] ?? "Échec de la connexion");
+        EasyLoading.showError(
+            response.data['message'] ?? "Échec de la connexion");
       }
     } catch (e) {
       setState(() {
@@ -125,9 +126,8 @@ class _LoginState extends State<Login> {
             child: Column(
               children: [
                 const SizedBox(height: 40),
-
                 SvgPicture.asset(
-                  'assets/images/login_illustration.svg',  // Utilisation temporaire de onboarding1.svg
+                  'assets/images/login_illustration.svg', // Utilisation temporaire de onboarding1.svg
                   height: 100,
                 ),
                 const SizedBox(height: 32),
@@ -203,7 +203,8 @@ class _LoginState extends State<Login> {
                       Row(
                         children: [
                           Expanded(
-                            child: Divider(color: Colors.grey[300], thickness: 1),
+                            child:
+                                Divider(color: Colors.grey[300], thickness: 1),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -216,7 +217,8 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           Expanded(
-                            child: Divider(color: Colors.grey[300], thickness: 1),
+                            child:
+                                Divider(color: Colors.grey[300], thickness: 1),
                           ),
                         ],
                       ),
@@ -281,11 +283,13 @@ class _LoginState extends State<Login> {
                     _obscurePassword ? Icons.visibility_off : Icons.visibility,
                     color: const Color(0xFF1976D2),
                   ),
-                  onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                  onPressed: () =>
+                      setState(() => _obscurePassword = !_obscurePassword),
                 )
               : null,
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {

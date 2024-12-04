@@ -50,7 +50,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       title: const Text('Nom d\'utilisateur'),
                       subtitle: FutureBuilder<String>(
                         future: SharedPreferences.getInstance().then(
-                          (prefs) => prefs.getString('username') ?? 'Non défini',
+                          (prefs) =>
+                              prefs.getString('username') ?? 'Non défini',
                         ),
                         builder: (context, snapshot) {
                           return Text(snapshot.data ?? 'Chargement...');
@@ -74,7 +75,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       title: const Text('CNI'),
                       subtitle: FutureBuilder<String>(
                         future: SharedPreferences.getInstance().then(
-                          (prefs) => prefs.getString('cni_number') ?? 'Non défini',
+                          (prefs) =>
+                              prefs.getString('cni_number') ?? 'Non défini',
                         ),
                         builder: (context, snapshot) {
                           return Text(snapshot.data ?? 'Chargement...');
@@ -158,7 +160,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   if (context.mounted) {
                     Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => Login()),
+                      MaterialPageRoute(builder: (context) => const Login()),
                       (route) => false,
                     );
                   }

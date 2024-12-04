@@ -1,7 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../urls/Urls.dart';
 
 class DepositScreen extends StatefulWidget {
   const DepositScreen({Key? key}) : super(key: key);
@@ -11,47 +11,111 @@ class DepositScreen extends StatefulWidget {
 }
 
 class _DepositScreenState extends State<DepositScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _phoneController = TextEditingController();
-  final _amountController = TextEditingController();
-  String _selectedPaymentMethod = 'Orange Money';
-  String _selectedBank = 'UBA';
-  
-  final List<String> _paymentMethods = ['Orange Money', 'MTN Mobile Money'];
-  final List<String> _banks = ['UBA', 'Afriland', 'Ecobank', 'BICEC'];
+  List<Map<String, dynamic>> banks = [];
+  Map<String, dynamic>? selectedBank;
+  final TextEditingController amountController = TextEditingController();
+  bool isLoading = false;
+  String? error;
 
   @override
-  void dispose() {
-    _phoneController.dispose();
-    _amountController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    fetchBanks();
   }
 
-  void _handleDeposit() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: Implement deposit logic
-      EasyLoading.show(status: 'Traitement en cours...');
-      Future.delayed(const Duration(seconds: 2), () {
-        EasyLoading.dismiss();
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Succès', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+  Future<void> fetchBanks() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? userId = prefs.getString('id_user');
+      if (userId == null) return;
+
+      setState(() {
+        isLoading = true;
+        error = null;
+      });
+
+      final dio = Dio();
+      Response response = await dio.get(
+        "${Urls.serviceBank}/api/bank/banks/banks-user/?user=$userId",
+      );
+
+      if (response.data is List) {
+        final allBanks = List<Map<String, dynamic>>.from(response.data);
+        setState(() {
+          banks =
+              allBanks.where((bank) => bank['status'] == 'VERIFIED').toList();
+          error = null;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        error = 'Erreur lors du chargement des banques';
+        isLoading = false;
+        banks = [];
+      });
+      print('Failed to fetch banks: $e');
+    }
+  }
+
+  Future<void> makeDeposit() async {
+    if (selectedBank == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Veuillez sélectionner une banque')),
+      );
+      return;
+    }
+
+    if (amountController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Veuillez entrer un montant')),
+      );
+      return;
+    }
+
+    try {
+      setState(() {
+        isLoading = true;
+      });
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? userId = prefs.getString('id_user');
+      if (userId == null) return;
+
+      final dio = Dio();
+      final response = await dio.post(
+        "${Urls.serviceDtw}/api/operations/depot",
+        queryParameters: {
+          'userId': userId,
+          'fromBankId': selectedBank!['id'],
+          'montant': int.parse(amountController.text),
+        },
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
             content: Text(
-              'Votre demande de dépôt a été envoyée avec succès. Vous recevrez une notification pour confirmer la transaction.',
-              style: GoogleFonts.poppins(),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK', style: GoogleFonts.poppins()),
-              ),
-            ],
+                'Dépôt effectué avec succès. Référence: ${response.data['reference']}'),
+            backgroundColor: Colors.green,
           ),
         );
+        // Vider le formulaire
+        setState(() {
+          selectedBank = null;
+          amountController.clear();
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Erreur lors du dépôt'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
       });
     }
   }
@@ -60,213 +124,109 @@ class _DepositScreenState extends State<DepositScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Dépôt',
-          style: GoogleFonts.poppins(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        backgroundColor: const Color(0xFF1976D2),
-        elevation: 0,
+        title: const Text('Effectuer un dépôt'),
+        backgroundColor: Colors.blue,
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF1976D2),
-              Colors.white,
-            ],
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Méthode de paiement',
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Sélectionnez une banque',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.grey.shade300),
-                            ),
-                            child: DropdownButtonFormField<String>(
+                            const SizedBox(height: 8),
+                            DropdownButtonFormField<Map<String, dynamic>>(
+                              value: selectedBank,
                               decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                                border: OutlineInputBorder(),
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
                               ),
-                              value: _selectedPaymentMethod,
-                              items: _paymentMethods.map((method) {
-                                return DropdownMenuItem(
-                                  value: method,
-                                  child: Text(method, style: GoogleFonts.poppins()),
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedPaymentMethod = value!;
-                                });
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            'Numéro de téléphone',
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextFormField(
-                            controller: _phoneController,
-                            keyboardType: TextInputType.phone,
-                            style: GoogleFonts.poppins(),
-                            decoration: InputDecoration(
-                              hintText: '6XXXXXXXX',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              prefixIcon: const Icon(Icons.phone),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Veuillez entrer votre numéro';
-                              }
-                              if (!RegExp(r'^6[0-9]{8}$').hasMatch(value)) {
-                                return 'Numéro invalide';
-                              }
-                              return null;
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Montant (XAF)',
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextFormField(
-                            controller: _amountController,
-                            keyboardType: TextInputType.number,
-                            style: GoogleFonts.poppins(),
-                            decoration: InputDecoration(
-                              hintText: '0',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              prefixIcon: const Icon(Icons.attach_money),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Veuillez entrer un montant';
-                              }
-                              final amount = int.tryParse(value);
-                              if (amount == null || amount < 100) {
-                                return 'Le montant minimum est de 100 XAF';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            'Banque',
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.grey.shade300),
-                            ),
-                            child: DropdownButtonFormField<String>(
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(horizontal: 15),
-                              ),
-                              value: _selectedBank,
-                              items: _banks.map((bank) {
-                                return DropdownMenuItem(
+                              hint: const Text('Choisir une banque'),
+                              items: banks.map((bank) {
+                                return DropdownMenuItem<Map<String, dynamic>>(
                                   value: bank,
-                                  child: Text(bank, style: GoogleFonts.poppins()),
+                                  child: Text(bank['bank_name'] ?? ''),
                                 );
                               }).toList(),
                               onChanged: (value) {
                                 setState(() {
-                                  _selectedBank = value!;
+                                  selectedBank = value;
                                 });
                               },
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 30),
-                  ElevatedButton(
-                    onPressed: _handleDeposit,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1976D2),
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                    const SizedBox(height: 16),
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Montant du dépôt',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              controller: amountController,
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                hintText: 'Entrez le montant',
+                                prefixText: 'FCFA ',
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    child: Text(
-                      'Effectuer le dépôt',
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: isLoading ? null : makeDeposit,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: Colors.blue,
+                      ),
+                      child: Text(
+                        isLoading
+                            ? 'Traitement en cours...'
+                            : 'Effectuer le dépôt',
+                        style: const TextStyle(fontSize: 16),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ),
-      ),
     );
+  }
+
+  @override
+  void dispose() {
+    amountController.dispose();
+    super.dispose();
   }
 }

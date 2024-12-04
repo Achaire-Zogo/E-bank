@@ -65,7 +65,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (mounted) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => Login()),
+        MaterialPageRoute(builder: (context) => const Login()),
       );
     }
   }

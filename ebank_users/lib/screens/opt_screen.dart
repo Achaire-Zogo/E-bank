@@ -200,8 +200,8 @@ class _OTPScreenState extends State<OTPScreen> {
                     ),
                   ),
                   child: isLoading
-                      ? CircularProgressIndicator(color: Colors.white)
-                      : Text(
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
                           "VÉRIFIER",
                           style: TextStyle(
                             fontSize: 18,

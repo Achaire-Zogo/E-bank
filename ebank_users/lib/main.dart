@@ -45,7 +45,7 @@ class _MyAppState extends State<MyApp> {
       } else if (isLoggedIn) {
         _initialScreen = const Home();
       } else {
-        _initialScreen = Login();
+        _initialScreen = const Login();
       }
       _isLoading = false;
     });
