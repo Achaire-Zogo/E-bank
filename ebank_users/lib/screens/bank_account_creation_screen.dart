@@ -82,16 +82,23 @@ class _BankAccountCreationScreenState extends State<BankAccountCreationScreen> {
 
     try {
       final dio = Dio();
-      final formData = FormData.fromMap({
+
+      // Préparation des données au format JSON
+      Map<String, dynamic> requestBody = {
         'userId': widget.userId,
         'bankId': widget.bankDetails['id'],
         'recto_cni': await MultipartFile.fromFile(rectoCNI!.path),
         'verso_cni': await MultipartFile.fromFile(versoCNI!.path),
-      });
+      };
 
       final response = await dio.post(
         '${Urls.serviceDemand}/api/requests',
-        data: formData,
+        data: requestBody,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        ),
       );
 
       if (response.statusCode == 200) {
